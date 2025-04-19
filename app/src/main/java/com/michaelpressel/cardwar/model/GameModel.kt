@@ -1,15 +1,22 @@
 package com.michaelpressel.cardwar.model
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+
 class GameModel {
-    var gamePhase: GamePhase = GamePhase.Pregame
-    fun getGamePhase(): GamePhase {
-        return gamePhase
-    }
+    var gamePhase by mutableStateOf(GamePhase.Pregame)
+        private set
+
 
     //model attributes include decks of cards for each player, cards in battle, and game over flag
     private val p1Deck = mutableListOf<Card>()
     private val p2Deck = mutableListOf<Card>()
     private val cardsInPlay = mutableListOf<Card>()
+    private var lastRoundWinner: Int? = null
+    fun getLastRoundWinner(): Int? = lastRoundWinner
+    private var lastWarWinner: Int? = null
+    fun getLastWarWinner(): Int? = lastWarWinner
 
     private var isGameOver = false
 
@@ -48,7 +55,7 @@ class GameModel {
         return initialCardsPlayed
     }
     private var lastCardsPlayed: Pair<Card?, Card?> = Pair(null,null)
-    fun getLastCardsPlayed(): Pair<Card?, Card?> {
+    fun getLastPlayedCards(): Pair<Card?, Card?> {
         return lastCardsPlayed
     }
 
@@ -76,7 +83,7 @@ class GameModel {
     fun resolveRound() {
 
         //ensure we are in the correct game phase
-        if(gamePhase != GamePhase.RoundResolved) {
+        if (gamePhase != GamePhase.RoundResolved && gamePhase != GamePhase.WarResolved){
             return
         }//end game phase check
 
@@ -90,6 +97,7 @@ class GameModel {
             p1Card.getValue() > p2Card.getValue() -> 1
             else -> 2
         }//end winner assignment
+        lastRoundWinner = winner
 
         //add cards to the winner's deck
         if (winner == 1) {
@@ -149,11 +157,13 @@ class GameModel {
             lastCardP1.getValue() > lastCardP2.getValue() -> {
                 p1Deck.addAll(cardsInPlay)
                 gamePhase = GamePhase.WarResolved
+                lastWarWinner = 1
             }
 
             lastCardP2.getValue() > lastCardP1.getValue() -> {
                 p2Deck.addAll(cardsInPlay)
                 gamePhase = GamePhase.WarResolved
+                lastWarWinner = 2
             }
 
             else -> {
