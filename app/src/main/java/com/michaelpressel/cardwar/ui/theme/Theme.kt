@@ -1,6 +1,5 @@
 package com.michaelpressel.cardwar.ui.theme
 
-import android.app.Activity
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
@@ -32,27 +31,28 @@ private val LightColorScheme = lightColorScheme(
     onSurface = Color(0xFF1C1B1F),
     */
 )
-
+//Composable function to set the theme
 @Composable
+//CardWarTheme has parameters for dark theme, dynamic color, and content
 fun CardWarTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
     dynamicColor: Boolean = true,
     content: @Composable () -> Unit
-) {
+) {//end parameters
+    //get the color scheme based on dark theme and dynamic color
     val colorScheme = when {
         dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
             val context = LocalContext.current
             if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
-        }
-
+        }//end dynamic color
         darkTheme -> DarkColorScheme
         else -> LightColorScheme
-    }
-
+    }//end color scheme
+    //material theme with the color scheme, typography, and content
     MaterialTheme(
         colorScheme = colorScheme,
         typography = Typography,
         content = content
-    )
-}
+    )//end material theme
+}//end CardWarTheme function

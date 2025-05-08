@@ -1,6 +1,6 @@
 package com.michaelpressel.cardwar.model
 
-
+//Deck class to hold the deck of cards
 class Deck {
     //attributes include the mutable list of Card objects
     private val cards = mutableListOf<Card>()
